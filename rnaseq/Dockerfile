@@ -127,5 +127,5 @@ RUN service ssh start
 
 EXPOSE 22
 EXPOSE 2200
-
+# this doesn't actually seem to start up ssh server
 CMD ["/usr/sbin/sshd","-D"]
