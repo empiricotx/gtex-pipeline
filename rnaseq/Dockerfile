@@ -1,6 +1,15 @@
 # Dockerfile for GTEx RNA-seq pipeline
-FROM ubuntu:18.04
-MAINTAINER Francois Aguet
+FROM databricksruntime/dbfsfuse:latest
+
+RUN apt-get update \
+  && apt-get install -y openssh-server \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Warning: the created user has root permissions inside the container
+# Warning: you still need to start the ssh process with `sudo service ssh start`
+RUN useradd --create-home --shell /bin/bash --groups sudo ubuntu
+
 
 RUN apt-get update && apt-get install -y software-properties-common && \
     apt-get update && apt-get install -y \
@@ -113,3 +122,10 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
 
 # scripts
 COPY src src/
+
+RUN service ssh start
+
+EXPOSE 22
+EXPOSE 2200
+
+CMD ["/usr/sbin/sshd","-D"]
