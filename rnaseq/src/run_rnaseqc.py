@@ -4,6 +4,7 @@ import argparse
 import subprocess
 from datetime import datetime
 import os
+import time
 
 
 parser = argparse.ArgumentParser(description='Wrapper for RNA-SeQC 2')
@@ -28,6 +29,14 @@ print('  * command: "{}"'.format(cmd), flush=True)
 subprocess.check_call(cmd, shell=True)
 
 # gzip GCTs
-subprocess.check_call('gzip {0}.exon_reads.gct {0}.gene_tpm.gct {0}.gene_reads.gct'.format(args.prefix), shell=True)
+
+try:
+    time.sleep(10)
+    cmd = 'gzip {0}.exon_reads.gct {0}.gene_tpm.gct {0}.gene_reads.gct'.format(args.prefix)
+    print(cmd)
+    subprocess.check_call('gzip {0}.exon_reads.gct {0}.gene_tpm.gct {0}.gene_reads.gct'.format(args.prefix), shell=True)
+except:
+    print("failed gzip")
+    pass
 
 print('['+datetime.now().strftime("%b %d %H:%M:%S")+'] Finished RNA-SeQC', flush=True)
